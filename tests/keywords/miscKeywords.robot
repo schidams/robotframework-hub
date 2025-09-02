@@ -17,7 +17,7 @@
 | | # Make sure we use the same python executable used by the test runner
 | | ${python}= | Evaluate | sys.executable | sys
 | | ${rfhub process}= | Start process | ${python} | -m | rfhub | @{options}
-| | sleep | 5 seconds | # give the server a chance to start
+| | Sleep | 5 seconds | # give the server a chance to start
 | | Set suite variable | ${rfhub process}
 | | Wait until keyword succeeds | 20 seconds | 1 second
 | | ... | Verify URL is reachable | /ping
@@ -28,8 +28,9 @@
 | |
 | | Terminate Process | ${rfhub process}
 | | ${result}= | Get process result
-| | Run keyword if | len('''${result.stderr}''') > 0
-| | ... | log | rfhub stderr: ${result.stderr} | DEBUG
+| | IF | len('''${result.stderr}''') > 0
+| |     Log | rfhub stderr: ${result.stderr} | DEBUG
+| | END
 
 
 | Verify URL is reachable
@@ -39,5 +40,5 @@
 | | [Documentation]
 | | ... | Fail if the given URL doesn't return a status code of 200.
 | | Create Session | tmp | http://localhost:${PORT}
-| | ${response}= | Get On Session | tmp | ${url}
+| | ${response}= | GET On Session | tmp | ${url}
 | | Should be equal as integers | ${response.status_code} | 200

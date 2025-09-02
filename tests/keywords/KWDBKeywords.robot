@@ -19,7 +19,7 @@
 | | ... | referenced by ${KWDB}. It returns the data returned
 | | ... | by that method. 
 | | ${keywords}= | Call method | ${KWDB} | get_keywords | *
-| | [Return] | ${keywords}
+| | RETURN | ${keywords}
 
 | Load a resource file into KWDB
 | | [Arguments] | ${name or path}

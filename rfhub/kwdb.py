@@ -627,18 +627,62 @@ class KeywordTable(object):
           A function takes in a custom object and returns a dictionary representation of the object.
           This dict representation includes meta data such as the object's module and class names.
           """
+        
+        # Handle simple types that don't need conversion
+        if obj is None or isinstance(obj, (str, int, float, bool, list, dict)):
+            return obj
+            
+        # Handle non-serializable objects by returning a simple representation
+        if not hasattr(obj, '__class__'):
+            return str(obj)
 
         #  Populate the dictionary with object meta data
         obj_dict = {
             "__class__": obj.__class__.__name__,
-            "__module__": obj.__module__
+            "__module__": getattr(obj, '__module__', 'unknown')
         }
 
-        # Populate the dictionary with object properties, but
-        # remove non-serializable '_setter__types'
-        _temp_dict = obj.__dict__
-        _temp_dict.pop('_setter__types', None)
-        obj_dict.update(_temp_dict)
+        try:
+            # Handle objects with __dict__ (regular objects)
+            if hasattr(obj, '__dict__'):
+                _temp_dict = obj.__dict__.copy()
+                _temp_dict.pop('_setter__types', None)
+                # Only include serializable values
+                for key, value in _temp_dict.items():
+                    try:
+                        if isinstance(value, (str, int, float, bool, type(None))):
+                            obj_dict[key] = value
+                        elif isinstance(value, (list, tuple)):
+                            obj_dict[key] = [str(v) if not isinstance(v, (str, int, float, bool, type(None))) else v for v in value]
+                        else:
+                            obj_dict[key] = str(value)
+                    except:
+                        obj_dict[key] = str(value)
+            # Handle objects with __slots__ (like ArgumentSpec)
+            elif hasattr(obj, '__slots__'):
+                for slot in obj.__slots__:
+                    if hasattr(obj, slot):
+                        try:
+                            value = getattr(obj, slot)
+                            if isinstance(value, (str, int, float, bool, type(None))):
+                                obj_dict[slot] = value
+                            else:
+                                obj_dict[slot] = str(value)
+                        except:
+                            obj_dict[slot] = 'unavailable'
+            # Fallback: use public attributes
+            else:
+                for attr in dir(obj):
+                    if not attr.startswith('_'):
+                        try:
+                            value = getattr(obj, attr)
+                            if not callable(value) and isinstance(value, (str, int, float, bool, type(None))):
+                                obj_dict[attr] = value
+                        except:
+                            pass
+        except:
+            # If all else fails, return a minimal representation
+            return {"__class__": obj.__class__.__name__, "__str__": str(obj)}
 
         return obj_dict
 

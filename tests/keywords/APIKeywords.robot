@@ -20,8 +20,11 @@
 | | ... | \| \| \| Do a get on \| blah blah blah blah blah 
 | | 
 | | ${response}= | GET On Session | rfhub | ${url} | expected_status=${expected_status}
-| | ${JSON}= | Set Variable If | "${response.status_code}" == "200"
-| | ... | ${response.json()}
+| | IF | "${response.status_code}" == "200"
+| |     ${JSON}= | Set Variable | ${response.json()}
+| | ELSE
+| |     ${JSON}= | Set Variable | ${EMPTY}
+| | END
 | | Set test variable | ${JSON}
 | | Set test variable | ${response}
 

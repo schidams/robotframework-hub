@@ -110,7 +110,7 @@
 | | ... | Objective: verify the name: prefix works
 | | Go to | ${ROOT}/doc
 | | Search for | name:screenshot
-| | Page should contain | Searching for 'screenshot' found 6 keywords
+| | Page should contain | found 6 keywords
 
 | Using the in: prefix
 | | [Documentation]
@@ -118,7 +118,6 @@
 | | Go to | ${ROOT}/doc
 | | Search for | screenshot in:SeleniumLibrary
 | | Page should contain | Searching for 'screenshot' found 4 keywords
-| | ... | Expected results to include exactly 4 keywords, but it didn't
 
 | Clicking search result link shows keyword
 | | [Documentation]

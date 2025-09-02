@@ -6,12 +6,15 @@
 | Suite Setup | Run keywords
 | ... | Create session | rfhub | url=http://${host}:${port} | AND
 | ... | Open Browser | ${ROOT} | ${BROWSER}
-| Suite Teardown  | Run keywords
-| ... | Delete All Sessions | AND
-| ... | Close all browsers
+| Suite Teardown  | Teardown Suite
 
 *** Variables ***
 | ${ROOT} | http://${HOST}:${PORT}
+
+*** Keywords ***
+| Teardown Suite
+| | Delete All Sessions
+| | Close all browsers
 
 *** Test Cases ***
 | Nav panel shows correct number of collections
@@ -29,16 +32,16 @@
 
 | Nav panel shows all libraries
 | | [Documentation]
-| | ... | Verify that the nav panel shows all of the libraries
+| | ... | Verify that the nav panel shows all of the collections
 | |
 | | [Tags] | navpanel
 | | [Setup] | Run keywords
-| | ... | Get list of libraries via the API | AND
+| | ... | Get list of collections via the API | AND
 | | ... | Go to | ${ROOT}/doc/
 | |
-| | FOR | ${lib} | IN | @{libraries}
+| | FOR | ${collection} | IN | @{collections}
 | | | Page should contain element
-| | | ... | //*[@id="left"]/ul/li/label[./text()='${lib["name"]}']
+| | | ... | //*[@id="left"]/ul/li/label[./text()='${collection["name"]}']
 | | | ... | limit=1
 | | END
 
@@ -97,3 +100,13 @@
 | | Do a get on | /api/libraries
 | | ${libraries}= | Get From Dictionary | ${JSON} | libraries
 | | Set suite variable | ${libraries}
+
+| Get list of collections via the API
+| | [Documentation]
+| | ... | Uses the hub API to get a list of all collections (libraries + resources).
+| | ... | The collections are stored in a suite-level variable
+| |
+| | # Get all collections from the API
+| | Do a get on | /api/libraries
+| | ${collections}= | Get From Dictionary | ${JSON} | libraries
+| | Set suite variable | ${collections}

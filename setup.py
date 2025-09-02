@@ -14,20 +14,20 @@ exec(open(filename).read())
 
 setup_requires_packages: list = ['wheel']
 install_requires_packages: list = [
-    'Flask>=1.1.1',
-    'Jinja2>=2.11.3',
-    'MarkupSafe>=0.23',
-    'PyYAML>=5.4',
-    'Werkzeug>=0.15.3',
-    'argh>=0.25.0',
-    'itsdangerous>=0.24',
-    'tornado>=6.0.3',
+    'Flask>=3.0.3',
+    'Jinja2>=3.1.4',
+    'MarkupSafe>=2.1.5',
+    'PyYAML>=6.0.2',
+    'Werkzeug>=3.0.4',
+    'argh>=0.31.3',
+    'itsdangerous>=2.2.0',
+    'tornado>=6.4.1',
     'pathtools3>=0.2.1',
-    'requests>=2.20.0',
-    'robotframework>=2.8.5',
-    'robotframework-requests>=0.5.0',
-    'robotframework-seleniumlibrary>=4.0.0',
-    'watchdog>=0.9.0'
+    'requests>=2.32.3',
+    'robotframework>=7.0.1',
+    'robotframework-requests>=0.9.7',
+    'robotframework-seleniumlibrary>=6.6.1',
+    'watchdog>=4.0.2'
 ]
 test_requires_packages: list = ['coverage']
 
@@ -46,7 +46,7 @@ setup(
     long_description_content_type="text/markdown",
     zip_safe=True,
     include_package_data=True,
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     setup_requires=setup_requires_packages,
     install_requires=install_requires_packages,
     extras_require={
